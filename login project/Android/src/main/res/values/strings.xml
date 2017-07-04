@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">HelloWorld</string>
+
+    <!-- 로그인 화면 -->
+    <string name="login_title">Login</string>
+
+
+    <string name="facebook_login">페이스북 계정으로 로그인</string>
+    <string name="login_button">로그인</string>
+    <string name="ask_no_account">계정이 없으세요?</string>
+    <string name="make_account">회원 가입</string>
+
+
+    <string name="term">회원 가입 또는 계속하기를 클릭하면 에어비앤비의 서비스 약관, 결제 서비스 약관, 개인정보 보호정책, 차별 금지 정책에 동의하는 것입니다.</string>
+    <string name="title_activity_basic">BasicActivity</string>
+</resources>

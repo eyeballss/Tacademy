@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 기본 레이아웃
+ margin : 부모와 자식사이에 경계선(보더)를 기준으로 부모와의 여백
+ padding: 경계선을 기준으로 자식과의 여백
+ -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.tacademy.helloworld.UI.MainActivity"
+    android:orientation="vertical"
+    android:weightSum="10"
+    >
+
+    <!-- 요소간의 간격 비율을 계산할때는 기준 방향의 값을 0dp로 두고, layout_weight으로 가중치를 계산 한다.
+    weightSum : 하위 자식들의 weight의 총합을 의미하며, 총합(weightSum)이 실제합(layout_weight)보다 크면 그만큼을 비운다
+    layout_weight:값이 0이면 해당 요소의 높이나 가로값만큼을 제외하고 나머지가 가중치 계산의 대상이 된다.
+    -->
+    <!--<LinearLayout-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp" android:layout_weight="0"></LinearLayout>-->
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1"
+        android:background="@color/login_title_bgcolor">
+
+        <!-- id는 하나의 xml안에서 고유해야 한다. -->
+        <TextView
+            android:text="@string/login_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/loginTitle" />
+
+        <Button
+            android:text="X"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_exit"
+            android:background="@color/login_blank_bgcolor"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:onClick="onExit" />
+    </RelativeLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/editText_email"
+            android:hint="email address"
+            android:layout_weight="1"
+            android:text="a@a.com"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:src="@mipmap/ic_launcher"
+            app:srcCompat="@android:drawable/sym_action_email" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/editText_password"
+            android:hint="password"
+            android:layout_weight="1"
+            android:text="1234"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:src="@mipmap/ic_launcher"
+            app:srcCompat="@android:drawable/ic_lock_lock" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/login_button"
+            android:textColor="#FFFFFF"
+            android:background="@color/colorAccent"
+            android:onClick="onLogin"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/ask_no_account"
+            android:padding="10dp"
+            android:gravity="center_vertical"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/make_account"
+            android:layout_alignParentRight="true"
+            android:background="@color/colorAccent"
+            android:onClick="onJoin"/>
+    </RelativeLayout>
+
+</LinearLayout>
