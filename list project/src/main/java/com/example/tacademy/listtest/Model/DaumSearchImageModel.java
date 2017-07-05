@@ -1,0 +1,37 @@
+package com.example.tacademy.listtest.Model;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Tacademy on 2017-07-05.
+ */
+
+public class DaumSearchImageModel {
+    public Channel channel;
+
+    public class Channel{
+        int result;
+        int pageCount;
+        String title;
+        public int totalCount;
+        String description;
+        public ArrayList<Items> item;
+        String lastBuildDate;
+        String link;
+        String generator;
+
+        public class Items{
+            public String pubDate;
+            public String title;
+            public String thumbnail;
+            String cp;
+            int height;
+            String link;
+            int width;
+            String image;
+            public String cpname;
+
+        }
+    }
+
+}
