@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">list test</string>
     <string name="title_activity_service">Service</string>
+    <string name="title_activity_grid">GridActivity</string>
 </resources>

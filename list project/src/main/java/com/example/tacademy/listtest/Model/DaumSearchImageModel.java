@@ -1,5 +1,6 @@
 package com.example.tacademy.listtest.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -20,13 +21,13 @@ public class DaumSearchImageModel {
         String link;
         String generator;
 
-        public class Items{
+        public class Items implements Serializable {
             public String pubDate;
             public String title;
             public String thumbnail;
             String cp;
             int height;
-            String link;
+            public String link;
             int width;
             String image;
             public String cpname;
