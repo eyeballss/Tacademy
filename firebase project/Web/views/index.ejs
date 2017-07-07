@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title><%= title %></title>
+<link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+	<h1>Sender My Push Messages To My Slaves</h1>
+	<p>
+		Welcome to
+		<%= title %>
+		!
+	</p>
+	<br>
+	<fieldset>
+		<form action="/" method="post">
+			<label for="token">You Slave's Token : </label>
+			<input text="text" name="token" size="70%" placeholder="input your token" value="cfMNqtUxzC0:APA91bEvIXJVzVEUuQUtchzMWVKasLtIsX0OvFiKEHueKOceUGShxIfdRynl_78NwBHwqwKTqmijnee_P9M4VFfTGk6HCY7zt_MUkBnOkhEjujbpUWmMlYVfX1wH1bPrwJFxZA8SdwHt"/>
+			<br>
+			<label for="msg">Sending Message  : </label>
+			<input text="text" name="msg" size="70%" placeholder="input your message for your slaves"/>
+			<br><br>
+			<input type="submit" value="send"/>
+		</form>
+	</fieldset>
+</body>
+</html>
