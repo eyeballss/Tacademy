@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="me.blog.eyeballss.myfirebasetest.ui.LoginActivity"
+    tools:showIn="@layout/activity_login">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+
+
+        <EditText
+            android:id="@+id/EditText_Email"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="textEmailAddress"
+            android:hint="email"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#000000"></FrameLayout>
+        <EditText
+            android:id="@+id/EditText_Password"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="password"
+            android:inputType="textPassword"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/Button_LoginFromAnnoToEmail"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:onClick="onSignUpFromAnoToEmail"
+                android:text="익명 계정으로부터 이메일 전환"/>
+            <Button
+                android:id="@+id/Button_LoginByEmailNPassword"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:onClick="onSignUpByEmailNPassword"
+                android:text="이메일비번으로 로그인"/>
+            <Button
+                android:id="@+id/Button_CreateEmailNPassword"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:onClick="onCreateEmailNPassword"
+                android:text="이메일비번으로 계정 만들기"/>
+            <Button
+                android:id="@+id/Button_ResetPasswordByEmail"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:onClick="onResetPasswordByEmail"
+                android:text="이메일로 비밀번호 초기화"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
