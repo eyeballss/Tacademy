@@ -1,5 +1,6 @@
 package me.blog.eyeballss.myfirebasetest.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -62,6 +63,8 @@ public class LoginActivity extends RootActivity {
         FirebaseUser user = getUser();
         if(user==null) return;
         Toast.makeText(this, "로그인 되었습니다.", Toast.LENGTH_SHORT).show();
+        goToChatService();
+
     }
 
     private void signInAnonymously(){
@@ -78,6 +81,7 @@ public class LoginActivity extends RootActivity {
                             if(user==null) return;
                             Log.d("LoginActivity", "익명 계정 생성 성공 : "+user.getUid());
                             Toast.makeText(self, "익명 계정 생성 성공", Toast.LENGTH_SHORT).show();
+                            goToChatService();
 
                             //실패했을 때
                         }else{
@@ -116,6 +120,7 @@ public class LoginActivity extends RootActivity {
                 if(getUser()==null){
                     signInAnonymously(); //로그인.
                     Toast.makeText(self, "로그인 되었습니다.", Toast.LENGTH_SHORT).show();
+                    goToChatService();
 
                 }
                 //로그인 되어있을 때
@@ -148,6 +153,8 @@ public class LoginActivity extends RootActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Log.d("LoginActivity", "email로 로그인 성공");
+                    goToChatService();
+
                 }
                 else{
                     Log.d("LoginActivity", "email로 로그인 실패");
@@ -231,6 +238,11 @@ public class LoginActivity extends RootActivity {
 
         firebaseAuth.sendPasswordResetEmail(e);
         Toast.makeText(self, "[ "+e+" ]로\n비번 초기화 메일을 보냈습니다.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void goToChatService(){
+        Intent intent = new Intent(this, SimpleChatActivity.class);
+        startActivity(intent);
     }
 }
 
