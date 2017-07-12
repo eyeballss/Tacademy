@@ -12,7 +12,7 @@ import me.blog.eyeballss.myfirebasetest.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MyPageFragment extends Fragment {
+public class MyPageFragment extends RootFragment {
     public MyPageFragment() {
         // Required empty public constructor
     }

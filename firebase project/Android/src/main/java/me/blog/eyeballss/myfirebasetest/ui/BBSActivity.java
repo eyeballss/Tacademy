@@ -86,6 +86,8 @@ public class BBSActivity extends RootActivity {
                 break;
             case R.id.action_logout:
                 signOut();
+                startActivity(new Intent(BBSActivity.this, LoginActivity.class));
+                finish();
                 break;
             default: return true;
         }

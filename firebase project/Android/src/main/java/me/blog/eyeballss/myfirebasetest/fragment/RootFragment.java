@@ -14,7 +14,6 @@ import me.blog.eyeballss.myfirebasetest.R;
  */
 public class RootFragment extends Fragment {
 
-
     public RootFragment() {
         // Required empty public constructor
     }

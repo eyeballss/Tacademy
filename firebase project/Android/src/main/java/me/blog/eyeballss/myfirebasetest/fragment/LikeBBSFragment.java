@@ -12,7 +12,7 @@ import me.blog.eyeballss.myfirebasetest.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LikeBBSFragment extends Fragment {
+public class LikeBBSFragment extends RootFragment {
 
 
     public LikeBBSFragment() {

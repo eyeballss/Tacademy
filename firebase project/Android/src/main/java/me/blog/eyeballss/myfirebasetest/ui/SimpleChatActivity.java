@@ -36,16 +36,12 @@ public class SimpleChatActivity extends RootActivity {
     EditText chatInput;
     ArrayList<ChatModel> items;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_chat);
 
         init();
-        initDatabase();
         setDatabaseListener();
 
     }
@@ -58,7 +54,7 @@ public class SimpleChatActivity extends RootActivity {
     }
 
     private void setDatabaseListener() {
-        databaseReference.child("chat").addChildEventListener(new ChildEventListener() {
+        getDatabaseReference().child("chat").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) { //자식이 추가되었을 때
                 onAddedData(dataSnapshot);
@@ -86,11 +82,6 @@ public class SimpleChatActivity extends RootActivity {
         });
     }
 
-    private void initDatabase() {
-        firebaseDatabase= FirebaseDatabase.getInstance();
-        databaseReference= firebaseDatabase.getReference(); //근본. db의 시작점.
-
-    }
 
     private void init() {
         items= new ArrayList<ChatModel>();
@@ -118,7 +109,7 @@ public class SimpleChatActivity extends RootActivity {
         model.setRegDate(System.currentTimeMillis()); //GMT 시간 : 런던+9시
 
         //db에 데이터를 추가.
-        databaseReference.child("chat").push() //chat이라는 방에 임의의 값이 생김.
+        getDatabaseReference().child("chat").push() //chat이라는 방에 임의의 값이 생김.
             .setValue(model); //chat이라는 방에 임의의 값이 달린 곳에 내 정보를 보냄.
 
         chatInput.setText("");

@@ -8,12 +8,23 @@ import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by Tacademy on 2017-07-05.
  */
 
 public class RootActivity extends AppCompatActivity {
+
+    DatabaseReference databaseReference;
+
+    protected DatabaseReference getDatabaseReference(){
+        if(databaseReference==null){
+            databaseReference = FirebaseDatabase.getInstance().getReference();
+        }
+        return databaseReference;
+    }
 
     FirebaseUser getUser(){
         return FirebaseAuth.getInstance().getCurrentUser();

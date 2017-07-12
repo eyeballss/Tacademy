@@ -48,9 +48,6 @@ public class LoginActivity extends RootActivity {
     EditText email;
     EditText password;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,8 +238,6 @@ public class LoginActivity extends RootActivity {
     }
 
     private void insertUserInfo() {
-        firebaseDatabase= FirebaseDatabase.getInstance();
-        databaseReference= firebaseDatabase.getReference(); //근본. db의 시작점.
 
         User userInfo = new User(getUser().getEmail(), "token", getUser().getEmail().split("@")[0],"",System.currentTimeMillis(),"");
 
@@ -251,7 +246,8 @@ public class LoginActivity extends RootActivity {
         //push는 users 내에 임의의 값을 갖는 방을 만들고 각각의 방마다 고유 데이터(userinfo)를 넣기 위함인데,
         //여기선 우리가 자체적으로 임의의 값을 갖고 있기 때문에 push를 하지 않아도 됨.
         //마치 임의의 값의 방이 primary key 인 마냥.
-        databaseReference.child("users").child(getUser().getUid()).push().setValue(userInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+        //push 라는 이름의 카테고리가 하나 더 있다고 생각해도 되겠다. /bbs/push/user 이렇게.
+        getDatabaseReference().child("users").child(getUser().getUid()).setValue(userInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){

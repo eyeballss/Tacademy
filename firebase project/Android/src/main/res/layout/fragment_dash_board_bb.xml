@@ -5,9 +5,14 @@
     tools:context="me.blog.eyeballss.myfirebasetest.fragment.DashBoardBBSFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/RecyclerView_Recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:padding="4dp"
+        tools:listitem="@layout/recycler_item_dashboard">
+
+
+    </android.support.v7.widget.RecyclerView>
 
 </FrameLayout>
