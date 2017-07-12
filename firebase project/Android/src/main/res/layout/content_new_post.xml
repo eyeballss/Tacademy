@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="me.blog.eyeballss.myfirebasetest.ui.NewPostActivity"
+    tools:showIn="@layout/activity_new_post"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:weightSum="1">
+
+    <EditText
+        android:id="@+id/EditText_PostTitle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Title"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/EditText_PostContent"
+        android:hint="Content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.28" />
+
+
+
+</LinearLayout>

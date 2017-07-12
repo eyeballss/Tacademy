@@ -19,6 +19,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 import me.blog.eyeballss.myfirebasetest.R;
+import me.blog.eyeballss.myfirebasetest.model.User;
+
 /*
 firebase로 인증 기능 만들기
  - 익명 인증
@@ -42,6 +47,9 @@ public class LoginActivity extends RootActivity {
     FirebaseAuth firebaseAuth;
     EditText email;
     EditText password;
+
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +161,8 @@ public class LoginActivity extends RootActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Log.d("LoginActivity", "email로 로그인 성공");
+                    //이메일로 로그인할 때 db에 회원 정보를 저장!
+                    insertUserInfo();
                     goToChatService();
 
                 }
@@ -210,6 +220,8 @@ public class LoginActivity extends RootActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
+
+
                     getUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -228,6 +240,30 @@ public class LoginActivity extends RootActivity {
         });
     }
 
+    private void insertUserInfo() {
+        firebaseDatabase= FirebaseDatabase.getInstance();
+        databaseReference= firebaseDatabase.getReference(); //근본. db의 시작점.
+
+        User userInfo = new User(getUser().getEmail(), "token", getUser().getEmail().split("@")[0],"",System.currentTimeMillis(),"");
+
+
+        //여기서 push를 쓰지 않는 이유 ,
+        //push는 users 내에 임의의 값을 갖는 방을 만들고 각각의 방마다 고유 데이터(userinfo)를 넣기 위함인데,
+        //여기선 우리가 자체적으로 임의의 값을 갖고 있기 때문에 push를 하지 않아도 됨.
+        //마치 임의의 값의 방이 primary key 인 마냥.
+        databaseReference.child("users").child(getUser().getUid()).push().setValue(userInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(self, "유저 정보 db 삽입 성공!", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(self, "유저 정보 db 삽입 실패!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
     //비번 초기화
     public void onResetPasswordByEmail(View view){
         String e =email.getText().toString();
@@ -241,8 +277,10 @@ public class LoginActivity extends RootActivity {
     }
 
     public void goToChatService(){
-        Intent intent = new Intent(this, SimpleChatActivity.class);
+//        Intent intent = new Intent(this, SimpleChatActivity.class);
+        Intent intent = new Intent(this, BBSActivity.class);
         startActivity(intent);
+        finish();
     }
 }
 

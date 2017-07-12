@@ -1,7 +1,6 @@
 package me.blog.eyeballss.myfirebasetest.ui;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -51,14 +50,18 @@ public class SimpleChatActivity extends RootActivity {
 
     }
 
+    private void onAddedData(DataSnapshot dataSnapshot){
+        ChatModel model = dataSnapshot.getValue(ChatModel.class); //Model 객체를 주면 Model에 담겨서 날아옴.
+        items.add(model);
+        adapter.notifyDataSetChanged(); //전체를 갈아엎기때문에 비효율적이다.
+        listView.setSelection(items.size()-1);
+    }
+
     private void setDatabaseListener() {
         databaseReference.child("chat").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) { //자식이 추가되었을 때
-                ChatModel model = dataSnapshot.getValue(ChatModel.class); //Model 객체를 주면 Model에 담겨서 날아옴.
-                items.add(model);
-                adapter.notifyDataSetChanged();
-                listView.setSelection(items.size()-1);
+                onAddedData(dataSnapshot);
             }
 
             @Override
@@ -95,6 +98,8 @@ public class SimpleChatActivity extends RootActivity {
         chatSend = (Button) findViewById(R.id.Button_ChatSend);
         chatInput = (EditText) findViewById(R.id.EditText_ChatInput);
 
+        //system service를 이용해서 inflater를 구할 수 있다!
+        //기존에는 Activity.get~~ 으로 가져왔었음.
         layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         listView = (ListView) findViewById(R.id.Listview_ChatView);
         adapter = new ChatAdapter();

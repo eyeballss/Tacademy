@@ -19,6 +19,12 @@ public class RootActivity extends AppCompatActivity {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    protected void signOut(){
+        if(FirebaseAuth.getInstance()!=null){
+            FirebaseAuth.getInstance().signOut();
+        }
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
