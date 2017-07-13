@@ -1,6 +1,7 @@
 package me.blog.eyeballss.myfirebasetest.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,8 +10,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 
 import me.blog.eyeballss.myfirebasetest.R;
+import me.blog.eyeballss.myfirebasetest.fragment_holder.PostViewHolder;
+import me.blog.eyeballss.myfirebasetest.model.Post;
+import me.blog.eyeballss.myfirebasetest.ui.DetailActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,39 +39,14 @@ import me.blog.eyeballss.myfirebasetest.R;
  */
 public class DashBoardBBSFragment extends RootFragment {
 
-    //  리사이클러 뷰                리스트뷰
-    //  CardView를 cell로 씀.        그냥 만들어서 씀.
-    //  RecyclerView.Adapter         BaseAdaper
-    //  viewHolder 기본 장착         우리가 직접 장착
-    //   (RecyclerView.viewHolder)
-    //  3개의 방향성있음.            위에서 아래로 단방향성
-    //   (선형, 그리드형, 높은 자유도의 ex확장형)
-    RecyclerView recyclerView;
     public DashBoardBBSFragment() {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-        View view = inflater.inflate(R.layout.fragment_dash_board_bb, container, false);
-        recyclerView = view.findViewById(R.id.RecyclerView_Recycler);
-
-        return view;
+    public Query getDatabaseQuery(DatabaseReference databaseReference) {
+        return databaseReference.child("bbs").limitToFirst(100);
     }
 
-    //프래그먼트의 라이프사이클 메소드.
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
-        //리사이클러뷰의 방향성 설정. setLayoutManager 메소드로 설정 가능.
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-    }
 }

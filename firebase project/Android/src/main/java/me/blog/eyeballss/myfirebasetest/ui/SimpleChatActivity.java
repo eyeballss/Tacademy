@@ -16,8 +16,6 @@ import android.widget.TextView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -46,18 +44,11 @@ public class SimpleChatActivity extends RootActivity {
 
     }
 
-    private void onAddedData(DataSnapshot dataSnapshot){
-        ChatModel model = dataSnapshot.getValue(ChatModel.class); //Model 객체를 주면 Model에 담겨서 날아옴.
-        items.add(model);
-        adapter.notifyDataSetChanged(); //전체를 갈아엎기때문에 비효율적이다.
-        listView.setSelection(items.size()-1);
-    }
-
     private void setDatabaseListener() {
         getDatabaseReference().child("chat").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) { //자식이 추가되었을 때
-                onAddedData(dataSnapshot);
+                onDataAdded(dataSnapshot);
             }
 
             @Override
@@ -81,6 +72,14 @@ public class SimpleChatActivity extends RootActivity {
             }
         });
     }
+
+    private void onDataAdded(DataSnapshot dataSnapshot){
+        ChatModel model = dataSnapshot.getValue(ChatModel.class); //Model 객체를 주면 Model에 담겨서 날아옴.
+        items.add(model);
+        adapter.notifyDataSetChanged(); //전체를 갈아엎기때문에 비효율적이다.
+        listView.setSelection(items.size()-1);
+    }
+
 
 
     private void init() {

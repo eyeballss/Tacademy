@@ -26,7 +26,7 @@ public class RootActivity extends AppCompatActivity {
         return databaseReference;
     }
 
-    FirebaseUser getUser(){
+    public FirebaseUser getUser(){
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 

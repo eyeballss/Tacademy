@@ -99,11 +99,15 @@ public class NewPostActivity extends RootActivity {
         //작성 내용 검사
         if(!isValid(title,content)) return;
         //그릇에 담음
-        Post post = new Post(title, content, getUser().getEmail().split("@")[0], getUser().getEmail());
+        Post post = new Post(
+                title,
+                content,
+                getUser().getEmail().split("@")[0],
+                getUser().getEmail());
         //넣고 싶은 데이터의 분류가 다양하다면, 그래서 여러 분류를 갖게 된다면  setValue 보다는 update 해서 거기도 올리고 여기도 올리는게 좋음.
-          //즉, 모든 분류에 자료를 넣는거다.
-        //나는, 여기서의 update는 일반적인 '갱신'의 의미도 있고, '여러 군데 동시에 map으로 올림' 이란 뜻도 있다고 해석함.
-        //여기서는 채팅 채널 상에서 보이는 최신 글 , 채팅 창 안에서 보이는 최신글이
+                //즉, 모든 분류에 자료를 넣는거다.
+                //나는, 여기서의 update는 일반적인 '갱신'의 의미도 있고, '여러 군데 동시에 map으로 올림' 이란 뜻도 있다고 해석함.
+                //여기서는 채팅 채널 상에서 보이는 최신 글 , 채팅 창 안에서 보이는 최신글이
 
         //push 등으로 만든 임의의 값(키)를 가져오는 방법. getKEY!!!!!!!!! 이 키가 채팅방의 고유 id가 될 것임.
         String key = getDatabaseReference().child("bbs").push().getKey();
@@ -112,7 +116,7 @@ public class NewPostActivity extends RootActivity {
         //업데이트 할 내용들을 생성
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("/bbs/"+key, data); //[ "/bbs/"+key ]가 경로가 됨! map의 key에 해당하는 부분이 PATH이고 data 부분이 db path에 들어가는 내용임.
-        updates.put("/bbs/"+getUser().getUid()+"/"+key, data);
+        updates.put("/mybbs/"+getUser().getUid()+"/"+key, data);
         //setValue 하면 리스너를 각각 달아야하지만, update 하면 한 번에 여러개를 할 수 있다.
         getDatabaseReference().updateChildren(updates, new DatabaseReference.CompletionListener() {
             @Override

@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+
 import me.blog.eyeballss.myfirebasetest.R;
 
 /**
@@ -19,13 +22,9 @@ public class LikeBBSFragment extends RootFragment {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_like_bb, container, false);
-        return view;
+    public Query getDatabaseQuery(DatabaseReference databaseReference) {
+        return databaseReference.child("bbs").orderByChild("likeCount"); //likeCount 값을 정렬의 기준으로 삼아 가져와라.
     }
 
 }

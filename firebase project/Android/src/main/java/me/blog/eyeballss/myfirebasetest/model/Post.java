@@ -7,13 +7,14 @@ import java.util.Map;
  * Created by Tacademy on 2017-07-12.
  */
 
+// '게시물 하나'의 정보를 담고 있음.
 public class Post {
     String title;
     String content;
     String nickname;
-    long regDate;
+    long regDate = System.currentTimeMillis();
     String email;
-    Map<String,Boolean> like  = new HashMap<String, Boolean>();
+    Map<String,Boolean> like =new HashMap<String, Boolean>();
     int likeCount;
 
     public Post(){}
@@ -91,10 +92,10 @@ public class Post {
         this.title = title;
         this.content = content;
         this.nickname = nickname;
-        this.regDate = System.currentTimeMillis();
+//        this.regDate = System.currentTimeMillis();
         this.email = email;
-//        this.like = like;
-//        this.likeCount = likeCount;
+//        this.like =
+        this.likeCount = 0;
     }
 
     public Map<String, Boolean> getLike() {

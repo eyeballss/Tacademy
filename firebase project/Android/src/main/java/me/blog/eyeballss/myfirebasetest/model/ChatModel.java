@@ -4,6 +4,8 @@ package me.blog.eyeballss.myfirebasetest.model;
  * Created by Tacademy on 2017-07-10.
  */
 
+//채팅할 때 필요한 모델
+//채팅창에 보여주기 위해 email, msg, date가 필요함. check는 읽었는지 아닌지 확인
 public class ChatModel {
     String email;
     String msg;

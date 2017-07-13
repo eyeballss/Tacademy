@@ -55,7 +55,6 @@ public class LoginActivity extends RootActivity {
         self=this;
         email= (EditText) findViewById(R.id.EditText_Email);
         password = (EditText) findViewById(R.id.EditText_Password);
-
         initFirebaseAuth();
         initToolbar();
     }
@@ -72,9 +71,10 @@ public class LoginActivity extends RootActivity {
 
     }
 
-    private void signInAnonymously(){
+    private boolean result;
+    private boolean signInAnonymously(){
         showPd();
-
+        result = false;
         firebaseAuth.signInAnonymously()
                 //익명 로그인 서버 처리가 완료된 후
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -86,30 +86,19 @@ public class LoginActivity extends RootActivity {
                             if(user==null) return;
                             Log.d("LoginActivity", "익명 계정 생성 성공 : "+user.getUid());
                             Toast.makeText(self, "익명 계정 생성 성공", Toast.LENGTH_SHORT).show();
-                            goToChatService();
+//                            goToChatService();
+                            result = true;
 
                             //실패했을 때
                         }else{
                             Toast.makeText(self, "익명 계정 생성 실패", Toast.LENGTH_SHORT).show();
-
+                            result = false;
                         }
                         stopPd();
                     }
-                })
-                //익명 로그인 서버 처리가 실패한 경우
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                })
-                //익명 로그인 서버 처리가 성공한 경우
-                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-
-                    }
                 });
+
+        return result;
     }
 
 
@@ -123,8 +112,12 @@ public class LoginActivity extends RootActivity {
             public void onClick(View view) {
                 //로그인이 안 되어 있을 때
                 if(getUser()==null){
-                    signInAnonymously(); //로그인.
-                    Toast.makeText(self, "로그인 되었습니다.", Toast.LENGTH_SHORT).show();
+                    if(!signInAnonymously()) {
+                        Toast.makeText(self, "익명으로 로그인 하지 못하였습니다.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    //로그인.
+                    Toast.makeText(self, "익명으로 로그인 되었습니다.", Toast.LENGTH_SHORT).show();
                     goToChatService();
 
                 }
@@ -145,6 +138,38 @@ public class LoginActivity extends RootActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
     }
+
+
+
+    //이메일 패스워드로 계정 만들기
+    public void onCreateEmailNPassword(View view){
+        HashMap<String, String> info = (HashMap<String, String>) isValid();
+        if(info==null) return;
+
+        firebaseAuth.createUserWithEmailAndPassword(info.get("email"), info.get("password")).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    getUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                //사실 sendEmailVerification으로 비정상 이메일을 걸러야하는데 거르질 못 하고 있음.
+                                Toast.makeText(self, "이메일로 계정 생성 성공", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(self, "비정상적인 이메일입니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }else{
+                    Toast.makeText(self, "이메일로 계정 생성 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+
 
     //이메일로 로그인 할 수 있게 하자.
     public void onSignUpByEmailNPassword(View view){
@@ -205,36 +230,6 @@ public class LoginActivity extends RootActivity {
         map.put("email", e);
         map.put("password", p);
         return map;
-    }
-
-
-    //이메일 패스워드로 계정 만들기
-    public void onCreateEmailNPassword(View view){
-        HashMap<String, String> info = (HashMap<String, String>) isValid();
-        if(info==null) return;
-
-        firebaseAuth.createUserWithEmailAndPassword(info.get("email"), info.get("password")).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-
-
-                    getUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                //사실 sendEmailVerification으로 비정상 이메일을 걸러야하는데 거르질 못 하고 있음.
-                                Toast.makeText(self, "이메일로 계정 생성 성공", Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(self, "비정상적인 이메일입니다.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }else{
-                    Toast.makeText(self, "이메일로 계정 생성 실패", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     private void insertUserInfo() {

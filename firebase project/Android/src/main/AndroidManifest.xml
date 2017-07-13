@@ -45,6 +45,11 @@
         <activity
             android:name=".ui.NewPostActivity"
             android:label="@string/title_activity_new_post"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Video" />
+        <activity
+            android:name=".ui.DetailActivity"
+            android:label="@string/title_activity_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
