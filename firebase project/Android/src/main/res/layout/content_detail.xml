@@ -8,10 +8,36 @@
     tools:context="me.blog.eyeballss.myfirebasetest.ui.DetailActivity"
     tools:showIn="@layout/activity_detail">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+        android:orientation="vertical">
+        <!--해당 글의 상세 내용-->
+        <include layout="@layout/recycler_item_dashboard" />
+
+        <!--댓글 입력하는 부분-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/comments_input"
+                android:layout_weight="1"/>
+            <Button
+                android:text="add"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:onClick="onSendComment"
+                android:layout_weight="0"/>
+        </LinearLayout>
+
+        <!--해당 게시물에 붙은 덧글을 보여주는 부분-->
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recyclerView"></android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

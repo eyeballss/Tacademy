@@ -53,6 +53,8 @@ public abstract class RootFragment extends Fragment {
     }
 
 
+    //프래그먼트 라이프 사이클의 onCreate 다음 단계
+    //여기서 recyclerView를 인플레이트 하자.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -63,8 +65,8 @@ public abstract class RootFragment extends Fragment {
         return view;
     }
 
-
-    //프래그먼트의 라이프사이클 메소드.
+    //프래그먼트의 라이프사이클의 onCreateView 다음 단계.
+    //여기서 recycler view의 방향성을 정하고 어댑터를 적용하자.
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -78,9 +80,9 @@ public abstract class RootFragment extends Fragment {
         //리사이클러뷰의 어댑터 연결!
         // T는 Type을 의미.
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Post, PostViewHolder>(
-                Post.class, //
+                Post.class, //여기서 넣어준 Post.class가 아래 populateViewHolder에서 모델로 쓰여질 것임. 즉, 아이템 하나의 모델!
                 R.layout.recycler_item_dashboard, //item layout
-                PostViewHolder.class,
+                PostViewHolder.class,  //여기서 넣어준 PostViewHolder.class가 아래 populateViewHolder에서 뷰홀더로 쓰여질 것임. 즉, 아이템 하나에 대한 뷰 홀더!
                 getDatabaseQuery(FirebaseDatabase.getInstance().getReference())
 //                FirebaseDatabase.getInstance().getReference().child("bbs").limitToFirst(100)
             ) {
