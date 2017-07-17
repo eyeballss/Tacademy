@@ -1,0 +1,16 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.tacademy.fbtest186.fragment.TotalBbsFragment">
+
+    <!-- tools:listitem : customcell preview -->
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerView"
+        android:padding="4dp"
+        tools:listitem="@layout/cell_post_layout">
+    </android.support.v7.widget.RecyclerView>
+
+</FrameLayout>
