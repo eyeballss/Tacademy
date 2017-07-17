@@ -4,6 +4,7 @@
     package="com.example.tacademy.facebooktest">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- application을 재정의하면 name=".CameraApplication" 이렇게 여기 추가해준다. -->
     <application
