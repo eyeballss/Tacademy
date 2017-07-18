@@ -2,18 +2,24 @@ package me.blog.eyeballss.gpstest;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Address;
 import android.util.Log;
 
 
+import com.squareup.otto.Bus;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import static android.R.attr.value;
+
 /**
  * Created by Tacademy on 2017-07-17.
  */
 
-class Util {
+public class Util {
     private static final Util ourInstance = new Util();
 
-    static Util getInstance() {
+    public static Util getInstance() {
         return ourInstance;
     }
 
@@ -58,14 +64,67 @@ class Util {
                 .show();
     }
 
-    public void Log(String key, String value){
-        if(true){
+    public SweetAlertDialog showPopup(Context context, String title, String content, int type){
+        SweetAlertDialog alert = new SweetAlertDialog(context, type);
+        alert.setTitleText(title)
+                .setContentText(content)
+                .setCancelable(false);
+        alert.show();
+        return alert;
+    }
+
+
+    private boolean log = true;
+    public void Log(String key, String main){
+        if(log){
             Log.d(key, "-----------------------------------------------------------------");
-            Log.d(key, ""+value);
+            Log.d(key, "["+value+"]");
             Log.d(key, "-----------------------------------------------------------------");
         }
     }
 
+    public void Log(String key, int value){
+        if(log){
+            Log.d(key, "=================================================================");
+            Log.d(key, "["+value+"]");
+            Log.d(key, "=================================================================");
+        }
+    }
+    public void Log(String key, String value[]){
+        if(log){
+            Log.d(key, "=================================================================");
+            for(String i : value){
+                Log.d(key, "- ["+i+"] \n");
+            }
+            Log.d(key, "=================================================================");
+        }
+    }
+
+    public void Log(String key, int value[]){
+        if(log){
+            Log.d(key, "=================================================================");
+            for(int i : value){
+                Log.d(key, "- ["+i+"] \n");
+            }
+            Log.d(key, "=================================================================");
+        }
+    }
+
+    //Address를 받아서 시 군 구 동 까지 표시하는 메소드
+    public String getTransferAddr(Address address){
+        if(address==null) return "";
+
+        return String.format("%s %s %s", address.getAdminArea(), address.getLocality(), address.getThoroughfare());
+    }
+
+
+
+    //Otto Bus 를 만들어서 서비스에서 얻은 gps 정보를 Main 에서 가져오도록 하자!
+    Bus gpsBusFromService = new Bus();
+
+    public Bus getGpsBusFromService() {
+        return gpsBusFromService;
+    }
     //paparazzo 이용하는 부분
 //    private void onGallery(Context context){
 //
