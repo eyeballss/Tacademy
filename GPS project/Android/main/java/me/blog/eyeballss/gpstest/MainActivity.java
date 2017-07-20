@@ -42,6 +42,10 @@ import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.blog.eyeballss.gpstest.service.GPSDetectingService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static android.os.Build.VERSION_CODES.M;
 
@@ -52,11 +56,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int flagGPSStatus=0;
     EditText addr;
     private GoogleMap mMap;
+    private boolean isFirstGPSLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        isFirstGPSLoad = true;
 
         //버스를 만들고 등록함. 서비스에서부터 오는 정보를 이 버스가 계속 받아옴.
         Util.getInstance().getGpsBusFromService().register(this);
@@ -287,6 +293,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         addr.setText(location.getLatitude()+","+location.getLongitude());
         getAddress(location);
         showMyLocation(location);
+
+        //첫번째로 받고 난 뒤에 retrofit 통신을 시작하자.
+        if(isFirstGPSLoad) {
+            isFirstGPSLoad=false;
+            startAllCoffeeStores();
+
+        }
+    }
+
+    //모든 커피 전문점 가져옴
+    private void startAllCoffeeStores() {
+        Call<ResCoffeeStoresModel> res = Net.getInstance().getApiIm().all();
+        res.enqueue(new Callback<ResCoffeeStoresModel>() {
+            @Override
+            public void onResponse(Call<ResCoffeeStoresModel> call, Response<ResCoffeeStoresModel> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        ResCoffeeStoresModel coffeeStores = response.body();
+                        drawStoresOnMap(coffeeStores);
+
+                    }else{
+                        //body가 없음
+                    }
+                }else{
+                    //실패
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResCoffeeStoresModel> call, Throwable t) {
+                //실패
+            }
+        });
+
+
+
+    }
+
+    private void drawStoresOnMap(ResCoffeeStoresModel coffeeStores) {
     }
 
     //lat, lng 을 address로 바꾸는 메소드
@@ -392,21 +437,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    public void showMyLocation(Location location){
+    public void showMyLocation(Location location) {
+        showMyLocation(location, "here I am!");
+    }
+     public void showMyLocation(Location location, String title){
         //현재 위치를 지도에 표시!
         if(mMap == null) return;
 
         //화면에 표시함. 움직일 때 마다 마킹이 되니 clear 함.
         mMap.clear();
         LatLng myLoc = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(myLoc).title("here i am!"));
+        mMap.addMarker(new MarkerOptions().position(myLoc).title(title));
 
         //줌 처리
         CameraPosition cp = new CameraPosition.Builder()
                 .target(myLoc) //위치
                 .zoom(16) //확대 정도
-                .bearing(60) //돌리는 각
-                .tilt(30)
+//                .bearing(60) //돌리는 각
+//                .tilt(30)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
     }
