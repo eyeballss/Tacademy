@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -54,6 +56,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.os.Build.VERSION_CODES.M;
+import static me.blog.eyeballss.gpstest.R.id.map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         // 이렇게해서 view를 찾는다. 지도를 소유하고 있는 fragment를 획득함!
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(map);
 
         //지도를 동기화시켜줌.
         mapFragment.getMapAsync(this);
@@ -308,14 +311,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // TODO: React to the event somehow!
         addr.setText(location.getLatitude()+","+location.getLongitude());
         getAddress(location);
-        showMyLocation(location);
+
 
         //첫번째로 받고 난 뒤에 retrofit 통신을 시작하자.
         if(isFirstGPSLoad) {
+            showMyLocation(location);
             isFirstGPSLoad=false;
             startAllCoffeeStores();
 
         }
+
     }
 
     //모든 커피 전문점 가져옴
@@ -327,7 +332,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(response.isSuccessful()){
                     if(response.body()!=null){
                         coffeeStores = response.body().getBody();
-//                        drawStoresOnMap(coffeeStores);
+//                        coffeeAdapter.notifyDataSetChanged(); //가급적 전체 갱신은 쓰지 말자. 에너지를 너무 많이 먹음
+                        drawStoresOnMap(coffeeStores);
 
                     }else{
                         //body가 없음
@@ -347,7 +353,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void drawStoresOnMap(ResCoffeeStoresModel coffeeStores) {
+    private void drawStoresOnMap(ArrayList<CoffeeStoreModel> coffeeStores) {
+        GeoPoint point;
+        LatLng currentPosition;
+        for(CoffeeStoreModel coffee : coffeeStores){
+
+            point= Util.getInstance().transFromKATEC2GEO(new GeoPoint(coffee.getX_AXIS(), coffee.getY_AXIS()));
+            currentPosition = new LatLng(point.getY(), point.getX());
+            int icon;
+            if(coffee.getType().equals("STARBUCKS")){
+                icon=R.drawable.small_starbucks;
+            }else {
+                icon = R.drawable.small_bean;
+            }
+            mMap.addMarker(new MarkerOptions()
+                    .position(currentPosition)
+                    .icon(BitmapDescriptorFactory.fromResource(icon))
+                    .title(coffee.getNM()));
+
+
+        }
+
     }
 
     //lat, lng 을 address로 바꾸는 메소드
@@ -465,14 +491,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LatLng myLoc = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(myLoc).title(title));
 
-        //줌 처리
-        CameraPosition cp = new CameraPosition.Builder()
-                .target(myLoc) //위치
-                .zoom(16) //확대 정도
+         //줌 처리
+         CameraPosition cp = new CameraPosition.Builder()
+                 .target(myLoc) //위치
+                 .zoom(16) //확대 정도
 //                .bearing(60) //돌리는 각
 //                .tilt(30)
-                .build();
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
+                 .build();
+         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
     }
 
 
