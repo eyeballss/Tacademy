@@ -125,6 +125,20 @@ public class Util {
     public Bus getGpsBusFromService() {
         return gpsBusFromService;
     }
+
+
+
+    //좌표 변환. KAREC - > GEO로 변환
+    public GeoPoint transFromKATEC2GEO(GeoPoint point){
+        return GeoTrans.convert(
+                GeoTrans.KATEC, //from
+                GeoTrans.GEO, //to
+                point //이용할 포인트
+        );
+    }
+
+
+
     //paparazzo 이용하는 부분
 //    private void onGallery(Context context){
 //
