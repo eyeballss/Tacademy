@@ -1,12 +1,14 @@
 package me.blog.eyeballss.gpstest;
 
+import java.util.ArrayList;
+
 /**
  * Created by Tacademy on 2017-07-20.
  */
 
 public class ResCoffeeStoresModel {
-    int code;
-    CoffeeStoreModel coffeeStoreModel;
+        int code;
+        ArrayList<CoffeeStoreModel> body;
 
     public int getCode() {
         return code;
@@ -16,11 +18,11 @@ public class ResCoffeeStoresModel {
         this.code = code;
     }
 
-    public CoffeeStoreModel getCoffeeStoreModel() {
-        return coffeeStoreModel;
+    public ArrayList<CoffeeStoreModel> getBody() {
+        return body;
     }
 
-    public void setCoffeeStoreModel(CoffeeStoreModel coffeeStoreModel) {
-        this.coffeeStoreModel = coffeeStoreModel;
+    public void setBody(ArrayList<CoffeeStoreModel> body) {
+        this.body = body;
     }
 }

@@ -14,7 +14,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,7 +27,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,10 +39,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,7 +52,6 @@ import me.blog.eyeballss.gpstest.service.GPSDetectingService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import static android.os.Build.VERSION_CODES.M;
 
@@ -57,6 +63,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     EditText addr;
     private GoogleMap mMap;
     private boolean isFirstGPSLoad;
+    RecyclerView recyclerView;
+    CoffeeAdapter coffeeAdapter;
+//    ResCoffeeStoresModel coffeeStores;
+    ArrayList<CoffeeStoreModel> coffeeStores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +109,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initUI() {
         addr = (EditText) findViewById(R.id.EditText_SearchBar);
+        recyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
+        coffeeAdapter = new CoffeeAdapter();
+        //방향 설정
+        recyclerView.setLayoutManager(new LinearLayoutManager(this)); //기본형
+        recyclerView.setAdapter(coffeeAdapter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -311,8 +326,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<ResCoffeeStoresModel> call, Response<ResCoffeeStoresModel> response) {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
-                        ResCoffeeStoresModel coffeeStores = response.body();
-                        drawStoresOnMap(coffeeStores);
+                        coffeeStores = response.body().getBody();
+//                        drawStoresOnMap(coffeeStores);
 
                     }else{
                         //body가 없음
@@ -459,4 +474,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
     }
+
+
+
+    //'리사이클러뷰'의 뷰 홀더
+    class CoffeeViewHolder extends RecyclerView.ViewHolder{
+
+        ImageView brandImage;
+        TextView name, address;
+
+        //초기화
+        public CoffeeViewHolder(View itemView) {
+            super(itemView);
+            brandImage = (ImageView) itemView.findViewById(R.id.cell_BrandImage);
+            name = (TextView) itemView.findViewById(R.id.cell_Name);
+            address = (TextView) itemView.findViewById(R.id.cell_Address);
+        }
+
+        //각자 맞게 세팅
+        public void toBind(CoffeeStoreModel coffeeStoreModel){
+            name.setText(coffeeStoreModel.getNM());
+            address.setText(coffeeStoreModel.getADDRESS());
+
+            int imageRef;
+            if(coffeeStoreModel.getType().equals("COFFEEBEAN")){
+                imageRef=R.drawable.bean;
+            }else{
+                imageRef=R.drawable.starbuck;
+            }
+
+            Picasso.with(brandImage.getContext()).load(imageRef).into(brandImage);
+        }
+
+
+    }
+
+    class CoffeeAdapter extends RecyclerView.Adapter<CoffeeViewHolder>{
+
+        @Override
+        public CoffeeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.cell_coffee_layout, parent, false); //왜 false인지는 모르겠음.
+            return new CoffeeViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(CoffeeViewHolder holder, int position) {
+            holder.toBind(coffeeStores.get(position));//내가 만든 toBind
+        }
+
+        @Override
+        public int getItemCount() {
+            return coffeeStores ==null? 0 : coffeeStores.size();
+        }
+    }//CoffeeAdapter
 }

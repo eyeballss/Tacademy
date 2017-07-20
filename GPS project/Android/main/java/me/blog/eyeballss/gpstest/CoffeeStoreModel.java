@@ -5,11 +5,11 @@ package me.blog.eyeballss.gpstest;
  */
 
 public class CoffeeStoreModel {
-    String NM;
-    String ADRESS;
-    int X_AXIS;
-    int Y_AXIS;
-    String type; //커피브랜드
+    String NM;      //` VARCHAR(128) NULL DEFAULT NULL COMMENT '점포명',
+    String ADDRESS; //` VARCHAR(512) NULL DEFAULT NULL COMMENT '정포주소',
+    int X_AXIS;     //` INT(10) UNSIGNED NOT NULL COMMENT 'x',
+    int Y_AXIS;     //` INT(10) UNSIGNED NOT NULL COMMENT 'y',
+    String type;    //` VARCHAR(10) NULL DEFAULT NULL COMMENT '커피브랜드'
 
     public String getNM() {
         return NM;
@@ -19,12 +19,12 @@ public class CoffeeStoreModel {
         this.NM = NM;
     }
 
-    public String getADRESS() {
-        return ADRESS;
+    public String getADDRESS() {
+        return ADDRESS;
     }
 
-    public void setADRESS(String ADRESS) {
-        this.ADRESS = ADRESS;
+    public void setADDRESS(String ADDRESS) {
+        this.ADDRESS = ADDRESS;
     }
 
     public int getX_AXIS() {

@@ -17,7 +17,7 @@ public interface CoffeeFactoryIm {
     Call<ResCoffeeStoresModel> all();
 
     //특정 커피 전문점
-    @GET("coffee")
+    @GET("coffeeStores")
     Call<ResCoffeeStoresModel> coffee(@Query("t") String t);
 
 }
