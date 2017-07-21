@@ -40,6 +40,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //버스를 만들고 등록함. 서비스에서부터 오는 정보를 이 버스가 계속 받아옴.
         Util.getInstance().getGpsBusFromService().register(this);
 
-        //여기서부터 지도 끌고오는 부분
+        //여기서부터 지도 끌고오는 부분------------------------------------------------------------------------
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         // 이렇게해서 view를 찾는다. 지도를 소유하고 있는 fragment를 획득함!
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //지도를 동기화시켜줌.
         mapFragment.getMapAsync(this);
-        //까지 지도.
+        //까지 지도.-------------------------------------------------------------------------------------------
 
         initUI();
         //네트워크 체크(정확한 내 위치 계산을 위하여)
@@ -356,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void drawStoresOnMap(ArrayList<CoffeeStoreModel> coffeeStores) {
         GeoPoint point;
         LatLng currentPosition;
+        int index=0;
         for(CoffeeStoreModel coffee : coffeeStores){
 
             point= Util.getInstance().transFromKATEC2GEO(new GeoPoint(coffee.getX_AXIS(), coffee.getY_AXIS()));
@@ -366,11 +368,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }else {
                 icon = R.drawable.small_bean;
             }
-            mMap.addMarker(new MarkerOptions()
+            Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(currentPosition)
                     .icon(BitmapDescriptorFactory.fromResource(icon))
                     .title(coffee.getNM()));
 
+            //마커 인스턴스를 만든 후에 데이터를 세팅!
+            //해당 마커에 Tag가 붙에 된다.
+            coffee.setIndex(index++);
+            marker.setTag(coffee);
 
         }
 
@@ -471,12 +477,61 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //지도 자체를 가리키는 객체
         mMap = googleMap;
+        //마커를 클릭하는 발생하는 이벤트
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                final CoffeeStoreModel coffee = (CoffeeStoreModel) marker.getTag();
+                //리사이클뷰의 센터를, 선택한 내용으로 choice!
+
+                recyclerView.smoothScrollToPosition(coffee.getIndex());
+
+                //아래서 튀어나오는 스낵바
+                Snackbar.make(recyclerView, coffee.getNM()+":"+coffee.getADDRESS(), Snackbar.LENGTH_LONG).setAction("상세보기",
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+//                                Util.getInstance().showPopup(MainActivity.this, coffee.getNM(), coffee.getADDRESS(), SweetAlertDialog.NORMAL_TYPE);
+                                Intent intent = new Intent(MainActivity.this, SubDetailActivity.class);
+                                intent.putExtra("coffee", coffee);
+                                startActivity(intent);
+                            }
+                        }).show();
+                return false;
+            }
+        });
+
+
+        //지도에서 클릭하면 위치 이동!!
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                moveCamera(latLng);
+            }
+        }); //맵을 눌렀을 때
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                Util.getInstance().showPopup(MainActivity.this, "추가", "일정 입력", SweetAlertDialog.NORMAL_TYPE);
+
+            }
+        }); //맵을 길-게 눌렀을 때
 
         // Add a marker in Sydney and move the camera
         //특정 위치 마킹하여 화면 중앙에 보여줌
 //        LatLng sydney = new LatLng(-34, 151); //LatLng : latitude, longitude
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    private void moveCamera(LatLng latLng) {
+        CameraPosition cp = new CameraPosition.Builder()
+                .target(latLng) //위치
+                .zoom(16) //확대 정도
+//                .bearing(60) //돌리는 각
+//                .tilt(30)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
     }
 
     public void showMyLocation(Location location) {
@@ -489,9 +544,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //화면에 표시함. 움직일 때 마다 마킹이 되니 clear 함.
         mMap.clear();
         LatLng myLoc = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(myLoc).title(title));
+//        mMap.addMarker(new MarkerOptions().position(myLoc).title(title));
 
-         //줌 처리
+         //줌 처리 . 해당 위치로 이동을 바로 합니다.
          CameraPosition cp = new CameraPosition.Builder()
                  .target(myLoc) //위치
                  .zoom(16) //확대 정도

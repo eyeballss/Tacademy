@@ -50,12 +50,17 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
 
         <service
             android:name=".service.GPSDetectingService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity
+            android:name=".SubDetailActivity"
+            android:label="@string/title_activity_sub_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
