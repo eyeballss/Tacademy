@@ -14,6 +14,7 @@ public class CoffeeStoreModel implements Serializable{
     String type;    //` VARCHAR(10) NULL DEFAULT NULL COMMENT '커피브랜드'
 
     int index; // 인데에에에엑쓰으
+    double dist; //거리
 
     @Override
     public String toString() {
@@ -24,7 +25,16 @@ public class CoffeeStoreModel implements Serializable{
                 ", Y_AXIS=" + Y_AXIS +
                 ", type='" + type + '\'' +
                 ", index=" + index +
+                ", dist=" + dist +
                 '}';
+    }
+
+    public double getDist() {
+        return dist;
+    }
+
+    public void setDist(double dist) {
+        this.dist = dist;
     }
 
     public int getIndex() {

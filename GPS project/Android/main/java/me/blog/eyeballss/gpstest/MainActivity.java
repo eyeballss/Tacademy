@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -80,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Spinner cateSpinner;
     EditText dist;
     LatLng myLoc;
+    String selectedShop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 //커피 전문점을 선택하면 호출이 됨. 어떤 샾을 선택했는지 획득 후 저장
-                String selectedShop = cateSpinner.getItemAtPosition(i).toString();
+                selectedShop = cateSpinner.getItemAtPosition(i).toString();
                 Log.d("Main","선택된 샵 : "+selectedShop);
             }
 
@@ -545,8 +545,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                Util.getInstance().showPopup(MainActivity.this, "추가", "일정 입력", SweetAlertDialog.NORMAL_TYPE);
+//                Util.getInstance().showPopup(MainActivity.this, "추가", "일정 입력", SweetAlertDialog.NORMAL_TYPE);
 
+                myLoc = latLng;
+                onSearch2(null);
             }
         }); //맵을 길-게 눌렀을 때
 
@@ -656,7 +658,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     String[] arr = getResources().getStringArray(R.array.distance);
                     Snackbar.make(recyclerView, "[ "+arr[i]+" ] 거리를 선택하였음.", Snackbar.LENGTH_LONG).show();
                     //요청된 반경을 지도에 표시해보자.
-                    mMap.addCircle(new CircleOptions().center(myLoc).radius(1000*Double.parseDouble(arr[i].replace("km",""))));
+                    mMap.addCircle(new CircleOptions().center(myLoc).radius(
+                            1000*Double.parseDouble(arr[i].replace("km","")))
+                    );
+                    dist.setText(arr[i]);
+                    dialogInterface.dismiss(); //다이얼로그 닫기
                 }
             })
 
@@ -667,6 +673,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void onSearch2(View view){
         //커피숍 브랜드 + 거리 => 통신해서 그 결과로 지도를 갱신.
-
+        DistModel distModel = new DistModel(selectedShop, myLoc.latitude, myLoc.longitude,
+                Util.getInstance().transToDouble(dist.getText().toString().replace("km",""))
+        );
+        startBrandCoffeeStore(distModel);
     }
+
+    private void startBrandCoffeeStore(DistModel distModel){
+
+        Call<ResCoffeeStoresModel> res = Net.getInstance().getApiIm().coffeeDist(distModel);
+        res.enqueue(new Callback<ResCoffeeStoresModel>() {
+            @Override
+            public void onResponse(Call<ResCoffeeStoresModel> call, Response<ResCoffeeStoresModel> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        coffeeStores = response.body().getBody();
+//                        coffeeAdapter.notifyDataSetChanged(); //가급적 전체 갱신은 쓰지 말자. 에너지를 너무 많이 먹음
+                        mMap.clear(); // 마커를 모두 지우고
+                        drawStoresOnMap(coffeeStores); //새로 그림.
+
+                    }else{
+                        //body가 없음
+                    }
+                }else{
+                    //실패
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResCoffeeStoresModel> call, Throwable t) {
+                //실패
+            }
+        });
+    }
+
 }

@@ -9,10 +9,10 @@ var con_pool = new Pool({
 	name : 'mysql connection pool', //커넥션 이름
 	create : function( cb ){ //여기서 cb란 
 		var query ={
-				host : '...',
-				user : '..',
-				password : '..',
-				database : '..',
+				host : 'mysqlfortest.ci8xodqwvnwq.us-east-2.rds.amazonaws.com',
+				user : 'root',
+				password : 'rootroot',
+				database : 'MySQLForTest',
 			};
 		var con = mysql.createConnection(query);
 		con.connect(function(err){

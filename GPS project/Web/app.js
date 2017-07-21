@@ -32,6 +32,7 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 app.get('/all', t8.getAllStores);
 app.get('/coffee', t8.getAllStoresEx);
+app.post('/coffee', t8.getSpecificStore);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

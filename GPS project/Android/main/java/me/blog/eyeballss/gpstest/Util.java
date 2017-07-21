@@ -11,6 +11,7 @@ import com.squareup.otto.Bus;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static android.R.attr.value;
+import static java.lang.Double.parseDouble;
 
 /**
  * Created by Tacademy on 2017-07-17.
@@ -136,6 +137,17 @@ public class Util {
                 point //이용할 포인트
         );
     }
+
+    public double transToDouble(String str){
+        try{
+             return Double.parseDouble(str);
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+            return 0;
+        }
+
+    }
+
 
 
 

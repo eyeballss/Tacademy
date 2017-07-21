@@ -51,3 +51,30 @@ exports.getAllStoresEx = function(query, cb){
 		});
 	});
 }
+
+//type:브렌드, lat:위도, lng:경도, dist:거리
+exports.getSpecificStore = function( param, cb ){
+	pool.acquire(function(err, connection){
+		if( err ){ cb( err, null ); return; }		
+		connection.query("select * from " +
+                "(" +
+                "select " +
+                "*, (" +
+                "6371 * " +
+                "ACOS(" +
+                "COS(RADIANS(?))*" +
+                "         COS(RADIANS(lat))*" +
+                "         COS(RADIANS(lng)-RADIANS(?)) +" +
+                "         SIN(RADIANS(?))*" +
+                "         SIN(RADIANS(lat))         " +
+                ")" +
+                ") as dist " +
+                "from stores where `type`=?" +
+                ") as a where dist<=? order by dist asc;", 
+				[ param.lat, param.lng, param.lat, param.type, param.dist ],
+				function(err1, rows){
+					pool.release(connection);
+					cb( err1, rows );		
+		});
+	});	
+}
