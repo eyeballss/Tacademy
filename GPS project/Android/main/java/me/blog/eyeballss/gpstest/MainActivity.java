@@ -1,6 +1,7 @@
 package me.blog.eyeballss.gpstest;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -15,6 +16,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,8 +31,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,6 +44,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -71,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     CoffeeAdapter coffeeAdapter;
 //    ResCoffeeStoresModel coffeeStores;
     ArrayList<CoffeeStoreModel> coffeeStores;
+    Spinner cateSpinner;
+    EditText dist;
+    LatLng myLoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +127,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //방향 설정
         recyclerView.setLayoutManager(new LinearLayoutManager(this)); //기본형
         recyclerView.setAdapter(coffeeAdapter);
+
+        cateSpinner= (Spinner) findViewById(R.id.Spinner_Category);
+        dist= (EditText) findViewById(R.id.EditText_Distance);
+
+        ArrayAdapter <CharSequence> spinnerAdapter= ArrayAdapter.createFromResource(this, R.array.cate, android.R.layout.simple_spinner_item);
+        //자바 코드에서 리소스 가져오는 방법 : getResource().xxx....
+        ArrayAdapter <String> spinnerAdapter2= new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(R.array.cate));
+
+        cateSpinner.setAdapter(spinnerAdapter2);
+        cateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() { //아이템 선택 리스너
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                //커피 전문점을 선택하면 호출이 됨. 어떤 샾을 선택했는지 획득 후 저장
+                String selectedShop = cateSpinner.getItemAtPosition(i).toString();
+                Log.d("Main","선택된 샵 : "+selectedShop);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -506,7 +538,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                moveCamera(latLng);
+                myLoc = latLng;
+                moveCamera(myLoc);
             }
         }); //맵을 눌렀을 때
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
@@ -543,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //화면에 표시함. 움직일 때 마다 마킹이 되니 clear 함.
         mMap.clear();
-        LatLng myLoc = new LatLng(location.getLatitude(), location.getLongitude());
+        myLoc = new LatLng(location.getLatitude(), location.getLongitude());
 //        mMap.addMarker(new MarkerOptions().position(myLoc).title(title));
 
          //줌 처리 . 해당 위치로 이동을 바로 합니다.
@@ -608,4 +641,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return coffeeStores ==null? 0 : coffeeStores.size();
         }
     }//CoffeeAdapter
+
+
+
+    public void onDistanceSelect(View view){
+        //팝업을 띄워 검색 거리를 선택함
+
+        AlertDialog.Builder ad = new AlertDialog.Builder(this)
+            .setCancelable(true)
+            .setSingleChoiceItems(R.array.distance, 0, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    String[] arr = getResources().getStringArray(R.array.distance);
+                    Snackbar.make(recyclerView, "[ "+arr[i]+" ] 거리를 선택하였음.", Snackbar.LENGTH_LONG).show();
+                    //요청된 반경을 지도에 표시해보자.
+                    mMap.addCircle(new CircleOptions().center(myLoc).radius(1000*Double.parseDouble(arr[i].replace("km",""))));
+                }
+            })
+
+                .setTitle("거리 선택");
+        AlertDialog alertDialog = ad.create();
+        alertDialog.show();
+    }
+
+    public void onSearch2(View view){
+        //커피숍 브랜드 + 거리 => 통신해서 그 결과로 지도를 갱신.
+
+    }
 }
